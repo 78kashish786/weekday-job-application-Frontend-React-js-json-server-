@@ -41,7 +41,7 @@ const Header = () => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-  }, [user, storedUser])
+  }, [ storedUser])
 
   function openModal() {
     setIsOpen(true);
@@ -55,10 +55,10 @@ const Header = () => {
   return (
     <>
       <div className='flex items-center justify-between px-4 py-1 md:px-16  sticky top-0 bg-white'>
-        <h1 className='text-xl font-semibold text-[#171717]'>WeekDay</h1>
-        {/* <ul className='flex gap-5 text-gray-800 font-md text-sm'>
-        <li>Saved Jobs</li>
-      </ul> */}
+        <img className='h-[60px]'src={require('../Assets/WeekdayLogo.jpg')} alt="Log"/>
+        <ul className='flex gap-5 text-gray-800 font-md text-sm'>
+        <li><a href='/saved_jobs'>Saved Jobs</a></li>
+      </ul>
         <div className='flex gap-5'>
           {user && user?.role === 'recruitor' ? (<button onClick={openModal} className='my-4 border rounded-sm font-semibold text-green-400  px-3 py-2 border-green-400'>Upload Job</button>) : ("")}
           {

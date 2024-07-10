@@ -19,8 +19,8 @@ function App() {
      <Main>
       <Routes>
       {/* <Route path='/'element={<HomePage/>}/> */}
-      <Route element={<PrivateRoutes/>}>
-      <Route path='/' element={<HomePage/>}/>
+      <Route path='/'  element={<PrivateRoutes/>}>
+      <Route index element={<HomePage/>}/>
       <Route path='/saved_jobs' element={<SavedJobs/>}/>
       <Route path='/profile' element={<Profile/>}/>
       </Route>
@@ -32,7 +32,7 @@ function App() {
       <Route path='/register' element={<RegisterPage/>}/>
         </Route>
       
-      <Route path='*' element={<NotFound/>}/>
+      
       </Routes>
       
      </Main>

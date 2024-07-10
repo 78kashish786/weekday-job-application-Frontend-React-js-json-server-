@@ -20,7 +20,7 @@ const HomePage = () => {
   }
 
   const fetchPost = async () => {
-    fetch(`http://localhost:8000/jobs?_page=${page}&_limit=10`)
+    fetch(`http://localhost:8000/jobs?`)
       .then(res => res.json())
       .then(data => {
         console.log(data);
@@ -35,16 +35,16 @@ const HomePage = () => {
     fetchPost();
   }, [page]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !isLoading) {
-        setPage(prevPage => prevPage + 1);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !isLoading) {
+  //       setPage(prevPage => prevPage + 1);
+  //     }
+  //   };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasMore, isLoading]);
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => window.removeEventListener('scroll', handleScroll);
+  // }, [hasMore, isLoading]);
 
   console.log(data);
   return (
@@ -58,11 +58,13 @@ const HomePage = () => {
         </div>
       </div>
       <div className='flex flex-wrap md:grid grid-col-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-10'>
-        {isLoading && data.length === 0 ? [0, 1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+        
+        {isLoading && data.length === 0 ? [0, 1, 2, 3, 4, 5, 6, 7].map((index) => (
           <div key={index} className='bg-gray-200 shadow-sm animate-pulse h-[270px]'></div>
         )) : data.map((item, index) => {
           return (
             <JobCard key={index}
+            data={item}
               jdUid={item.jdUid}
               jobRole={item.jobRole}
               jobLocation={item.location}
@@ -71,6 +73,8 @@ const HomePage = () => {
               jobCurrency={item.salaryCurrencyCode}
               jobminExp={item.minExp}
               jobmaxExp={item.maxExp}
+              jdLink={item.jdLink}
+              // maxJdSalary, minJdSalary,companyName,id
             />
           )
         })}
