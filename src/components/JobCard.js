@@ -2,9 +2,10 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { CiLocationOn } from 'react-icons/ci'
 import { IoMdBookmark } from 'react-icons/io'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import MessageModal from './MessageModal'
 import { FaHeartPulse } from 'react-icons/fa6'
+import { MdDelete } from "react-icons/md";
 
 const JobCard = ({
   jobRole,
@@ -23,9 +24,8 @@ const JobCard = ({
   const [message, setMessage] = useState('')
   const [user, setUser] = useState(null)
   const [saved, setSaved] = useState(false);
-  const [loading,setLoading]= useState(false);
-
-  // const [success,setsuccess]= useState(false);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -50,15 +50,14 @@ const JobCard = ({
       setSaved(false)
     }
   }
+
   useEffect(() => {
     check()
-  }, [user,loading])
+  }, [user, loading])
 
   const handleSavedJobs = async () => {
     if (!user) {
-      // setsuccess(false);
       setMessage('You need to log in to Save a Job')
-
       return
     } else {
       try {
@@ -67,8 +66,8 @@ const JobCard = ({
           userId: user?.id
         })
         if (response.status === 201) {
-        //   setsuccess(true);
-        setLoading(true);
+          //   setsuccess(true);
+          setLoading(true);
           setMessage('job Saved Successfullly')
         } else {
           // setsuccess(false);
@@ -81,6 +80,36 @@ const JobCard = ({
         setMessage('An error occurred while saving the job.')
         console.log('error:', error)
       }
+    }
+  }
+  
+  const handleRemoveFromSaved = async()=>{
+    try {
+      setLoading(true);
+      const savedJobCheck = await axios.get('http://localhost:8000/saved_jobs', {params:{userId:user.id,jobId:jdUid}});
+
+      if(savedJobCheck.data.length === 0){
+        setMessage("Job not Found");
+        setLoading(false);
+        return;
+      }
+
+      const jobIDtoDelete = savedJobCheck.data[0].id;
+
+      const response = await axios.delete(`http://localhost:8000/saved_jobs`, {params:{id:jobIDtoDelete}});
+
+      if(response.status==200){
+        setLoading(true);
+        setMessage("Job Removed");
+      }else{
+        setLoading(false);
+        setMessage("Job removal unsuccessfull")
+        return;
+      }
+    } catch (error) {
+      console.log("Delete error",error);
+    }finally {
+      setLoading(false);  // Ensure loading is set to false in both success and error cases
     }
   }
 
@@ -111,15 +140,28 @@ const JobCard = ({
           >
             Apply
           </button>
-          <button
+          {location&&location.pathname==='/saved_jobs'?(
+            <button
+            onClick={handleRemoveFromSaved}
+            className='w-[50%] border border-red-500 text-red-500 font-semibold text-center  p-2 border'
+          >
+            <div className='flex gap-2 items-center justify-center'>
+              {/* <h1>{saved ? 'Saved' : 'Save'}</h1> */}
+              <h1>Remove</h1>
+              <MdDelete />
+            </div>
+          </button>
+          ):(
+            <button
             onClick={handleSavedJobs}
-            className={saved  ? 'w-[50%] border border-blue-500 text-white bg-blue-500 font-semibold text-center  p-2 border':'w-[50%] border border-blue-500 text-blue-500 font-semibold text-center  p-2 border'}
+            className={saved ? 'w-[50%] border border-blue-500 text-white bg-blue-500 font-semibold text-center  p-2 border' : 'w-[50%] border border-blue-500 text-blue-500 font-semibold text-center  p-2 border'}
           >
             <div className='flex gap-2 items-center justify-center'>
               <h1>{saved ? 'Saved' : 'Save'}</h1>
               <IoMdBookmark />
             </div>
           </button>
+          )}
         </div>
       </div>
       {/* {message&&success==true?<MessageModal message={message} success={success}/>:<MessageModal message={message} success={success}/>} */}
@@ -128,25 +170,3 @@ const JobCard = ({
 }
 
 export default JobCard
-
-// const handleOnSaveJob= async(e)=>{
-//     e.preventDefault();
-//     setJobId(jdUid);
-//     try {
-//         const userResponse = await axios.get(`http://localhost:8000/users?id=${user.id}`);
-//         const userData =userResponse.data;
-
-//         if(!user.savedJobs.includes(jobId)){
-//             user.savedJobs.push(jobId);
-
-//             await axios.put(`http://localhost:8000/users?id=${user.id}/saved_jobs`);
-//             setMessage('Job Saved Successfully');
-//         }else{
-//             setMessage('Job is Already Saved');
-//         }
-
-//     } catch (error) {
-//         console.error('Error adding job:', error);
-//   setMessage('Error adding job');
-//     }
-// }

@@ -60,7 +60,7 @@ const HomePage = () => {
       <div className='flex flex-wrap md:grid grid-col-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-10'>
         
         {isLoading && data.length === 0 ? [0, 1, 2, 3, 4, 5, 6, 7].map((index) => (
-          <div key={index} className='bg-gray-200 shadow-sm animate-pulse h-[270px]'></div>
+          <div key={index} className='bg-gray-100 opacity-30 shadow-sm animate-pulse h-[270px]'></div>
         )) : data.map((item, index) => {
           return (
             <JobCard key={index}

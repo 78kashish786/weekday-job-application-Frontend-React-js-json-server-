@@ -48,6 +48,7 @@ const SavedJobs = () => {
     const getSavedJobsData = async () => {
         try {
             // Fetch saved jobs for the user
+            // loading(true);
             const response = await axios.get(`http://localhost:8000/saved_jobs?userId=${user?.id}`);
             const savedJobs = response.data;
     
@@ -69,6 +70,7 @@ const SavedJobs = () => {
             // Log the saved jobs data
             console.log("Jobs",jobDetails);
         } catch (error) {
+            // loading(false);
             console.error("Error in Fetching Saved jobs", error);
             setErrors("Error in Fetching Saved Jobs");
         }
@@ -97,7 +99,6 @@ const SavedJobs = () => {
                     
                     // Data Present Condition
                     <div className='flex md:grid grid-cols-4 my-10'>
-                        {/* <Spinner/> */}
                         {
                             savedJobsData.map((item, index) => {
 
