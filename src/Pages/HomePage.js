@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Main from '../components/Main.js'
 import JobCard from '../components/JobCard.js'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchJobs } from '../Slice/JobSlice.js';
 
 const HomePage = () => {
   const [data, setData] = useState([]);
@@ -8,6 +10,15 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const dispatch = useDispatch();
+  const jobs=useSelector((state)=>state.jobs.filteredData);
+  const jobStatus = useSelector((state)=>state.jobs.status);
+
+  // useEffect(() => {
+  //   if (jobStatus === 'idle') {
+  //     dispatch(fetchJobs());
+  //   }
+  // }, [jobStatus, dispatch]);
 
   const handleSearchTerm = (e) => {
     const searchjob = e.target.value;

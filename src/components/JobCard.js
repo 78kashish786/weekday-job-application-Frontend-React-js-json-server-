@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import MessageModal from './MessageModal'
 import { FaHeartPulse } from 'react-icons/fa6'
 import { MdDelete } from "react-icons/md";
+import { toast } from 'react-toastify'
 
 const JobCard = ({
   jobRole,
@@ -15,7 +16,8 @@ const JobCard = ({
   jobCurrency,
   jobmaxExp,
   jobminExp,
-  jdUid
+  jdUid,
+  getSavedJobsData
 }) => {
 
 
@@ -26,6 +28,7 @@ const JobCard = ({
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const[isDeleted, setIsDeleted]= useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -53,12 +56,12 @@ const JobCard = ({
 
   useEffect(() => {
     check()
-  }, [user, loading])
+  }, [user, loading,])
 
   const handleSavedJobs = async () => {
     if (!user) {
       setMessage('You need to log in to Save a Job')
-      return
+      return;
     } else {
       try {
         const response = await axios.post('http://localhost:8000/saved_jobs', {
@@ -66,19 +69,28 @@ const JobCard = ({
           userId: user?.id
         })
         if (response.status === 201) {
-          //   setsuccess(true);
+          //   setsuccess(true);t
+          toast('Job Saved Successfull');
           setLoading(true);
+          setIsDeleted(true);
           setMessage('job Saved Successfullly')
+          
+          
         } else {
           // setsuccess(false);
           setLoading(false);
+          setIsDeleted(false);
           setMessage('Failed to save a job')
-          return
+          toast('Job Not Saved');
+
+          return;
         }
       } catch (error) {
         setLoading("false");
         setMessage('An error occurred while saving the job.')
         console.log('error:', error)
+      }finally{
+        setIsDeleted(false);
       }
     }
   }
@@ -96,11 +108,13 @@ const JobCard = ({
 
       const jobIDtoDelete = savedJobCheck.data[0].id;
 
-      const response = await axios.delete(`http://localhost:8000/saved_jobs`, {params:{id:jobIDtoDelete}});
+      const response = await axios.delete(`http://localhost:8000/saved_jobs/${jobIDtoDelete}`, );
 
-      if(response.status==200){
+      if(response.status==204){
         setLoading(true);
         setMessage("Job Removed");
+        toast('Job Removed Successfullly');
+
       }else{
         setLoading(false);
         setMessage("Job removal unsuccessfull")
@@ -112,7 +126,9 @@ const JobCard = ({
       setLoading(false);  // Ensure loading is set to false in both success and error cases
     }
   }
-
+// useEffect(()=>{
+//   getSavedJobsData();
+// },[isDeleted])
   return (
     <>
       <div className='p-3 border m-1 space-y-5 shadow-sm rounded-sm '>

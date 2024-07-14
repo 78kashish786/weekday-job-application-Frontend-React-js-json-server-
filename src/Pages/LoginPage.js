@@ -40,7 +40,7 @@ const LoginPage = () => {
     } catch (er) {
       setLoading(false);
       console.log("Errors during login", er);
-      setErrors("An Error Ocurrred suring login ");
+      setErrors("An Error Ocurrred during login, Check your Internet Connection");
       
     }
 
@@ -48,7 +48,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className=' flex flex-col justify-center items-center w-full '>
+    <div className=' flex flex-col justify-center items-center w-full   '>
       <img className='mb-5  ' src='https://upload.wikimedia.org/wikipedia/commons/f/f4/Weekday_Logo.jpg' alt="wekday logo" />
       <form onSubmit={handleLoginEvent} className='md:w-[30%]  text-center space-y-5'>
         <h1 className='text-3xl font-semibold ' >Welcome Back!</h1>
